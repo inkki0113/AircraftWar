@@ -12,12 +12,10 @@ class Settings:
         self.fighter_image_file = 'images/fighter.png'
         self.bullet_image_file = 'images/bullet.png'
         self.enemy_image_file = 'images/enemy.png'
+        self.star_image_file = 'images/star.png'
 
         # 战斗机的设置
         self.fighter_speed_factor = 8
 
         # 子弹的设置
         self.bullet_speed_factor = 10
-
-        # 敌人的设置
-        self.enemy_speed_factor = 0.1

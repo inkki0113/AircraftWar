@@ -13,18 +13,24 @@ def run_game():
     screen = pygame.display.set_mode((ai_settings.screen_width, ai_settings.screen_height))
     pygame.display.set_caption(ai_settings.caption)
 
-    # 创建一艘战斗机
+    # 创建屏幕上的各元素
     fighter = Fighter(screen, ai_settings.fighter_image_file, ai_settings)
     bullets = Group()
-    stars = gf.create_stars(screen, ai_settings)
+
+    stars = Group()
+    gf.create_stars(screen, ai_settings, stars)
+
+    enemies = Group()
+    gf.create_enemies(screen, ai_settings, enemies)
 
     # 开始游戏的主循环
     while True:
         gf.check_events(fighter, screen, ai_settings, bullets)
+        gf.update_stars(stars, ai_settings)
         fighter.update()
+        gf.update_enemies(enemies)
         gf.update_bullets(bullets)
-
-        gf.update_screen(screen, ai_settings, fighter, bullets, stars)
+        gf.update_screen(screen, ai_settings, fighter, bullets, stars, enemies)
 
 
 run_game()
