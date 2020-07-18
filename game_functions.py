@@ -87,15 +87,18 @@ def check_enemy_bottom(enemies, bullets, stats, fighter, screen, ai_settings):
 
 
 def enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen):
-    enemies.empty()
-    bullets.empty()
-    create_enemies(screen, ai_settings, enemies)
+    if stats.fighter_left > 0:
+        enemies.empty()
+        bullets.empty()
+        create_enemies(screen, ai_settings, enemies)
 
-    stats.fighter_left -= 1
+        stats.fighter_left -= 1
 
-    fighter.center_fighter()
+        fighter.center_fighter()
 
-    sleep(0.5)
+        sleep(0.5)
+    else:
+        stats.game_active = False
 
 
 def check_enemy_fighter(fighter, enemies, bullets, stats, ai_settings, screen):
@@ -125,10 +128,9 @@ def update_bullets(bullets, enemies):
             e.rect.centerx = random.randint(50, 750)
             e.rect.bottom = 0
             e.speed = random.randint(1, 3)
-    # print(len(collisions))
 
 
-def update_screen(screen, ai_settings, fighter, bullets, stars, enemies):
+def update_screen(screen, ai_settings, fighter, bullets, stars, enemies, stats, play_button):
     """更新屏幕上的图像，并切换到新屏幕"""
     # 每次循环时都重绘屏幕
     screen.fill(ai_settings.bg_color)
@@ -136,5 +138,8 @@ def update_screen(screen, ai_settings, fighter, bullets, stars, enemies):
     bullets.draw(screen)
     fighter.blitme()
     enemies.draw(screen)
+
+    if not stats.game_active:
+        play_button.draw_button()
 
     pygame.display.update()
