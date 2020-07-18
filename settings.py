@@ -16,6 +16,8 @@ class Settings:
 
         # 战斗机的设置
         self.fighter_speed_factor = 8
+        self.fighter_limit = 3
 
         # 子弹的设置
         self.bullet_speed_factor = 10
+

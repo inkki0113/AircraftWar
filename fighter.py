@@ -44,6 +44,10 @@ class Fighter:
         self.rect.centerx = self.centerx
         self.rect.centery = self.centery
 
+    def center_fighter(self):
+        self.rect.centerx = self.screen_rect.centerx
+        self.rect.bottom = self.screen_rect.bottom + 10
+
     def blitme(self):
         """在指定位置绘制战斗机"""
         self.screen.blit(self.image, self.rect)

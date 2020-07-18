@@ -2,6 +2,7 @@ import sys
 
 import pygame
 import random
+from time import sleep
 
 from bullet import Bullet
 from star import Star
@@ -73,13 +74,34 @@ def create_enemies(screen, ai_settings, enemies):
         enemies.add(enemy)
 
 
-def update_enemies(enemies):
+def update_enemies(enemies, bullets, stats, fighter, screen, ai_settings):
     enemies.update()
-    for enemy in enemies.copy():
-        if enemy.rect.top > 600:
-            enemy.rect.centerx = random.randint(50, 750)
-            enemy.rect.bottom = 0
-            enemy.speed = random.randint(1, 3)
+    check_enemy_bottom(enemies, bullets, stats, fighter, screen, ai_settings)
+    check_enemy_fighter(fighter, enemies, bullets, stats, ai_settings, screen)
+
+
+def check_enemy_bottom(enemies, bullets, stats, fighter, screen, ai_settings):
+    for enemy in enemies.sprites():
+        if enemy.rect.bottom == 600:
+            enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen)
+
+
+def enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen):
+    enemies.empty()
+    bullets.empty()
+    create_enemies(screen, ai_settings, enemies)
+
+    stats.fighter_left -= 1
+
+    fighter.center_fighter()
+
+    sleep(0.5)
+
+
+def check_enemy_fighter(fighter, enemies, bullets, stats, ai_settings, screen):
+    collisions = pygame.sprite.spritecollide(fighter, enemies, False)
+    if collisions:
+        enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen)
 
 
 def fire_bullets(screen, ai_settings, fighter, bullets):
@@ -88,7 +110,7 @@ def fire_bullets(screen, ai_settings, fighter, bullets):
     bullets.add(new_bullet)
 
 
-def update_bullets(bullets):
+def update_bullets(bullets, enemies):
     """更新子弹位置，并删除已消失的子弹"""
     # 更新子弹位置
     bullets.update()
@@ -96,6 +118,14 @@ def update_bullets(bullets):
     for bullet in bullets.copy():
         if bullet.rect.bottom < 0:
             bullets.remove(bullet)
+
+    collisions = pygame.sprite.groupcollide(bullets, enemies, True, False)
+    for es in collisions.values():
+        for e in es:
+            e.rect.centerx = random.randint(50, 750)
+            e.rect.bottom = 0
+            e.speed = random.randint(1, 3)
+    # print(len(collisions))
 
 
 def update_screen(screen, ai_settings, fighter, bullets, stars, enemies):
