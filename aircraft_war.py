@@ -16,12 +16,11 @@ def run_game():
     # 创建一艘战斗机
     fighter = Fighter(screen, ai_settings.fighter_image_file, ai_settings)
     bullets = Group()
-    stars = Group()
+    stars = gf.create_stars(screen, ai_settings)
 
     # 开始游戏的主循环
     while True:
         gf.check_events(fighter, screen, ai_settings, bullets)
-        # gf.star_flash(screen, ai_settings, stars)
         fighter.update()
         gf.update_bullets(bullets)
 

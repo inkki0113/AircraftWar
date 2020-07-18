@@ -8,6 +8,8 @@ from star import Star
 
 def check_keydown_event(event, fighter, screen, ai_settings, bullets):
     """响应按下按键"""
+    if event.key == pygame.K_q:
+        sys.exit()
     if event.key == pygame.K_RIGHT:
         fighter.moving_right = True
     if event.key == pygame.K_LEFT:
@@ -45,24 +47,18 @@ def check_events(fighter, screen, ai_settings, bullets):
             check_keyup_event(event, fighter)
 
 
+def create_stars(screen, ai_settings):
+    stars = []
+    for _ in range(30):
+        star = Star(screen, ai_settings)
+        stars.append(star)
+    return stars
+
+
 def fire_bullets(screen, ai_settings, fighter, bullets):
     # 创建一个子弹，并加入到编组bullets中
     new_bullet = Bullet(screen, ai_settings, fighter)
     bullets.add(new_bullet)
-
-
-# def star_flash(screen, ai_settings, stars):
-#     for i in range(30):
-#         new_star = Star(screen, ai_settings)
-#         stars.add(new_star)
-
-
-# def update_stars(stars):
-#     """更新星星数量，并删除已消失的星星"""
-#     stars.update()
-#     for star in stars.copy():
-#         if star.rect.top > 600:
-#             stars.remove(star)
 
 
 def update_bullets(bullets):
@@ -79,8 +75,10 @@ def update_screen(screen, ai_settings, fighter, bullets, stars):
     """更新屏幕上的图像，并切换到新屏幕"""
     # 每次循环时都重绘屏幕
     screen.fill(ai_settings.bg_color)
-    # for star in stars.sprites():
-    #     star.blitme()
+    for s in stars:
+        s.blitme()
+        s.star_move()
+        s.check_star_bottom(ai_settings)
     for bullet in bullets.sprites():
         bullet.blitme()
     fighter.blitme()

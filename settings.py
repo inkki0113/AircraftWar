@@ -1,5 +1,3 @@
-import random
-
 class Settings:
     """储存《飞机大战》的所有设置的类"""
 
@@ -13,17 +11,13 @@ class Settings:
         # 图片的路径及文件名
         self.fighter_image_file = 'images/fighter.png'
         self.bullet_image_file = 'images/bullet.png'
-        self.star_image_file = 'images/star.png'
         self.enemy_image_file = 'images/enemy.png'
 
         # 战斗机的设置
-        self.fighter_speed_factor = 0.8
+        self.fighter_speed_factor = 8
 
         # 子弹的设置
-        self.bullet_speed_factor = 1
-
-        # 星空的设置
-        self.star_speed_factor = random.uniform(0.2, 1)
+        self.bullet_speed_factor = 10
 
         # 敌人的设置
         self.enemy_speed_factor = 0.1
