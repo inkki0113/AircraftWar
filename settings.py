@@ -15,9 +15,20 @@ class Settings:
         self.star_image_file = 'images/star.png'
 
         # 战斗机的设置
-        self.fighter_speed_factor = 8
         self.fighter_limit = 3
 
         # 子弹的设置
         self.bullet_speed_factor = 10
 
+        # 杀死每个敌人的得分
+        self.enemy_point = 10
+
+        self.speedup_scale = 2
+        self.initialize_dynamic_settings()
+
+    def initialize_dynamic_settings(self):
+        self.fighter_speed_factor = 8
+
+    def increase_speed(self):
+        """提高速度设置"""
+        self.fighter_speed_factor *= self.speedup_scale

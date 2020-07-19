@@ -37,7 +37,7 @@ def check_keyup_event(event, fighter):
         fighter.moving_down = False
 
 
-def check_events(fighter, screen, ai_settings, bullets):
+def check_events(fighter, screen, ai_settings, bullets, play_button, stats, enemies, scoreboard):
     """监视键盘和鼠标事件"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -48,6 +48,28 @@ def check_events(fighter, screen, ai_settings, bullets):
 
         elif event.type == pygame.KEYUP:
             check_keyup_event(event, fighter)
+
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(play_button, mouse_x, mouse_y, stats, enemies, bullets, screen,
+                              ai_settings, fighter, scoreboard)
+
+
+def check_play_button(play_button, mouse_x, mouse_y, stats, enemies, bullets, screen, ai_settings, fighter, scoreboard):
+    button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
+    if button_clicked and not stats.game_active:
+        stats.reset_stats()
+        stats.game_active = True
+
+        scoreboard.prep_msg()
+
+        enemies.empty()
+        bullets.empty()
+
+        create_enemies(screen, ai_settings, enemies)
+        fighter.center_fighter()
+
+        pygame.mouse.set_visible(False)
 
 
 def create_stars(screen, ai_settings, stars):
@@ -84,6 +106,7 @@ def check_enemy_bottom(enemies, bullets, stats, fighter, screen, ai_settings):
     for enemy in enemies.sprites():
         if enemy.rect.bottom == 600:
             enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen)
+            break
 
 
 def enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen):
@@ -99,11 +122,11 @@ def enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen):
         sleep(0.5)
     else:
         stats.game_active = False
+        stats.reset_stats()
 
 
 def check_enemy_fighter(fighter, enemies, bullets, stats, ai_settings, screen):
-    collisions = pygame.sprite.spritecollide(fighter, enemies, False)
-    if collisions:
+    if pygame.sprite.spritecollideany(fighter, enemies):
         enemy_hit(enemies, bullets, fighter, stats, ai_settings, screen)
 
 
@@ -113,7 +136,20 @@ def fire_bullets(screen, ai_settings, fighter, bullets):
     bullets.add(new_bullet)
 
 
-def update_bullets(bullets, enemies):
+def check_bullets_enemies(bullets, enemies, stats, ai_settings, scoreboard):
+    collisions = pygame.sprite.groupcollide(bullets, enemies, True, False)
+    if collisions:
+        for enemies in collisions.values():
+            for enemy in enemies:
+                enemy.rect.centerx = random.randint(50, 750)
+                enemy.rect.bottom = 0
+                enemy.speed = random.randint(1, 3)
+
+            stats.score += ai_settings.enemy_point * len(enemies)
+            scoreboard.prep_msg()
+
+
+def update_bullets(bullets, enemies, stats, ai_settings, scoreboard):
     """更新子弹位置，并删除已消失的子弹"""
     # 更新子弹位置
     bullets.update()
@@ -122,15 +158,10 @@ def update_bullets(bullets, enemies):
         if bullet.rect.bottom < 0:
             bullets.remove(bullet)
 
-    collisions = pygame.sprite.groupcollide(bullets, enemies, True, False)
-    for es in collisions.values():
-        for e in es:
-            e.rect.centerx = random.randint(50, 750)
-            e.rect.bottom = 0
-            e.speed = random.randint(1, 3)
+    check_bullets_enemies(bullets, enemies, stats, ai_settings, scoreboard)
 
 
-def update_screen(screen, ai_settings, fighter, bullets, stars, enemies, stats, play_button):
+def update_screen(screen, ai_settings, fighter, bullets, stars, enemies, stats, play_button, scoreboard):
     """更新屏幕上的图像，并切换到新屏幕"""
     # 每次循环时都重绘屏幕
     screen.fill(ai_settings.bg_color)
@@ -138,8 +169,10 @@ def update_screen(screen, ai_settings, fighter, bullets, stars, enemies, stats, 
     bullets.draw(screen)
     fighter.blitme()
     enemies.draw(screen)
+    scoreboard.draw_scoreboard()
 
     if not stats.game_active:
         play_button.draw_button()
+        pygame.mouse.set_visible(True)
 
     pygame.display.update()

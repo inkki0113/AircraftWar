@@ -6,6 +6,7 @@ from game_stats import GameStats
 from settings import Settings
 from fighter import Fighter
 from button import Button
+from scoreboard import ScoreBoard
 
 
 def run_game():
@@ -28,16 +29,18 @@ def run_game():
 
     play_button = Button(screen)
 
+    scoreboard = ScoreBoard(screen, stats)
+
     while True:
-        gf.check_events(fighter, screen, ai_settings, bullets)
+        gf.check_events(fighter, screen, ai_settings, bullets, play_button, stats, enemies, scoreboard)
 
         if stats.game_active:
             gf.update_stars(stars, ai_settings)
             fighter.update()
-            gf.update_enemies(enemies, bullets, stats, fighter, screen, ai_settings)
-            gf.update_bullets(bullets, enemies)
+            gf.update_enemies(enemies, bullets, stats, fighter, screen, ai_settings, )
+            gf.update_bullets(bullets, enemies, stats, ai_settings, scoreboard)
 
-        gf.update_screen(screen, ai_settings, fighter, bullets, stars, enemies, stats, play_button)
+        gf.update_screen(screen, ai_settings, fighter, bullets, stars, enemies, stats, play_button, scoreboard)
 
 
 run_game()
