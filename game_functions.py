@@ -147,11 +147,19 @@ def check_bullets_enemies(bullets, enemies, stats, ai_settings, scoreboard):
                 enemy.rect.bottom = 0
                 enemy.speed = random.randint(1, 3)
 
-            stats.score += ai_settings.enemy_point * len(enemies)
-            scoreboard.prep_score()
-            if stats.score == stats.level * 1000:
-                stats.level += 1
-                scoreboard.prep_level()
+            refresh_score(stats, ai_settings, enemies, scoreboard)
+
+
+def refresh_score(stats, ai_settings, enemies, scoreboard):
+    stats.score += ai_settings.enemy_point * len(enemies)
+    scoreboard.prep_score()
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        scoreboard.prep_high_score()
+    if stats.score == stats.level * 100:
+        stats.level += 1
+        scoreboard.prep_level()
+
 
 
 def update_bullets(bullets, enemies, stats, ai_settings, scoreboard):

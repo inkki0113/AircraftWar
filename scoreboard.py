@@ -15,6 +15,7 @@ class ScoreBoard:
         # 创建记分牌标签
         self.prep_score()
         self.prep_level()
+        self.prep_high_score()
 
     def prep_score(self):
         """将msg渲染为图像，并使其在按钮上居中"""
@@ -31,6 +32,14 @@ class ScoreBoard:
         self.level_image_rect.top = self.score_image_rect.bottom + 10
         self.level_image_rect.right = 790
 
+    def prep_high_score(self):
+        self.high_score = str(self.stats.high_score)
+        self.high_score_image = self.font.render(self.high_score, True, self.text_color)
+        self.high_score_image_rect = self.high_score_image.get_rect()
+        self.high_score_image_rect.top = 10
+        self.high_score_image_rect.centerx = self.screen_rect.centerx
+
     def draw_scoreboard(self):
         self.screen.blit(self.score_image, self.score_image_rect)
         self.screen.blit(self.level_image, self.level_image_rect)
+        self.screen.blit(self.high_score_image, self.high_score_image_rect)
