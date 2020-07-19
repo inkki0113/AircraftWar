@@ -55,13 +55,15 @@ def check_events(fighter, screen, ai_settings, bullets, play_button, stats, enem
                               ai_settings, fighter, scoreboard)
 
 
-def check_play_button(play_button, mouse_x, mouse_y, stats, enemies, bullets, screen, ai_settings, fighter, scoreboard):
+def check_play_button(play_button, mouse_x, mouse_y, stats, enemies, bullets, screen, ai_settings,
+                      fighter, scoreboard):
     button_clicked = play_button.rect.collidepoint(mouse_x, mouse_y)
     if button_clicked and not stats.game_active:
         stats.reset_stats()
         stats.game_active = True
 
-        scoreboard.prep_msg()
+        scoreboard.prep_score()
+        scoreboard.prep_level()
 
         enemies.empty()
         bullets.empty()
@@ -146,7 +148,10 @@ def check_bullets_enemies(bullets, enemies, stats, ai_settings, scoreboard):
                 enemy.speed = random.randint(1, 3)
 
             stats.score += ai_settings.enemy_point * len(enemies)
-            scoreboard.prep_msg()
+            scoreboard.prep_score()
+            if stats.score == stats.level * 1000:
+                stats.level += 1
+                scoreboard.prep_level()
 
 
 def update_bullets(bullets, enemies, stats, ai_settings, scoreboard):

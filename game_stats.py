@@ -9,3 +9,4 @@ class GameStats:
         # 因为每次重新开始都要初始化，所以写一个方法专门存放需要初始化的数据
         self.fighter_left = self.ai_settings.fighter_limit
         self.score = 0
+        self.level = 1
